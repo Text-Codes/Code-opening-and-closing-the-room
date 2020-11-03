@@ -1,0 +1,55 @@
+client.on("message", message => {
+  if (message.content === prefix + "close") {
+    if (!message.channel.guild)
+      return message.reply(" هذا الامر فقط للسيرفرات !!");
+
+    if (!message.member.hasPermission("MANAGE_MESSAGES"))
+      return message.reply(" ليس لديك صلاحيات");
+    message.channel
+      .overwritePermissions(message.guild.id, {
+        SEND_MESSAGES: false
+      })
+      .then(() => {
+        message.reply("تم قفل الشات no_entry ");
+      });
+  }
+  if (message.content === prefix + "open") {
+    if (!message.channel.guild)
+      return message.reply(" هذا الامر فقط للسيرفرات !!");
+
+    if (!message.member.hasPermission("MANAGE_MESSAGES"))
+      return message.reply("ليس لديك صلاحيات");
+    message.channel
+      .overwritePermissions(message.guild.id, {
+        SEND_MESSAGES: true
+      })
+      .then(() => {
+        message.reply("تم فتح الشات white_check_mark");
+      });
+  }
+});
+
+client.on("error", err => {
+  console.log(err);
+});
+
+client.on("messageCreate", async message => {
+  let args = message.cleanContent.split(" ");
+  if (args[0] == ${prefix}roles) {
+    let space = "                         ";
+    let roles = message.guild.roles
+      .map(r => r)
+      .sort((a, b) => b.position - a.position);
+    let rr = roles
+      .map(
+        r =>
+          ${r.name +
+            space.substring(r.name.length) +
+            message.guild.members.filter(m => m.roles.includes(r.id))
+              .length} members
+      )
+      .join("\n");
+    await message.channel.sebd(``${rr}
+`);
+  }
+});
